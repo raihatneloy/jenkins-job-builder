@@ -156,6 +156,20 @@ def docker_custom_build_env(registry, xml_parent, data):
     convert_mapping_to_xml(entry_xml, data, mapping, fail_required=True)
 
 
+def nc_docker_env(registry, xml_parent, data):
+    """yaml: nc-docker-env
+    """
+    if data.get('image') is None or data.get('image') == 'None':
+        return
+
+    data['image'] = "%s/%s:%s" % (data['registry'], data['image'], data['tag'])
+    data['image-type'] = 'pull'
+    data['forced-pull'] = True
+    data['privileged'] = True
+
+    docker_custom_build_env(registry, xml_parent, data)
+
+
 def ci_skip(registry, xml_parent, data):
     """yaml: ci-skip
     Skip making a build for certain push.
